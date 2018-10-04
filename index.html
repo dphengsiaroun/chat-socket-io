@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Socket.IO chat</title>
+  <link rel="stylesheet" href="static/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container">
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" />
+      <button>Send</button>
+    </form>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    $(function () {
+      var socket = io();
+
+      // Envoyer le message
+      $('form').submit(function () {
+        socket.emit('newmsg', {
+          message: $('#m').val()
+        });
+        $('#m').val('');
+        return false;
+      });
+
+      // Récuperer le message et l'afficher
+      socket.on('newmsg', function (msg) {
+        if (msg.message.length === 0) {
+          console.log('message is empty');
+          return;
+        } else {
+          if (msg.m <= 9) {
+            minute = '0' + msg.m;
+          } else {
+            minute = msg.m;
+          }
+          $('#messages').append($('<li>').html('<span class="message">' + msg.message +
+            '</span><span class="time">' + msg.h + ':' + minute +
+            '</span>'));
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>
